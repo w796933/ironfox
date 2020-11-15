@@ -88,13 +88,13 @@ WantedBy=multi-user.target
 " >manager/innovera.service
 
 echo "check and setup dependencies..."
-sudo apt install build-essential
-sudo apt install redis
-sudo apt install libpcre3-dev
-sudo apt install libhiredis-dev
-sudo apt install libssl-dev
-sudo apt install zlib1g-dev
-sudo apt install openjdk-8-jdk
+sudo apt install build-essential -y
+sudo apt install redis git -y 
+sudo apt install libpcre3-dev -y
+sudo apt install libhiredis-dev -y
+sudo apt install libssl-dev -y
+sudo apt install zlib1g-dev -y
+sudo apt install openjdk-8-jdk -y
 
 #echo "installing PostgreSql..."
 #sudo apt update
@@ -112,48 +112,13 @@ cd $IRON_FOX_ROOT
 
 
 
-echo "apply iptables settings..."
-sudo iptables -P INPUT ACCEPT
-sudo iptables -P OUTPUT ACCEPT
-# flush iptables
-sudo iptables -F
-sudo iptables -X
-sudo iptables -t nat -F
-sudo iptables -t nat -X
-sudo iptables -t mangle -F
-sudo iptables -t mangle -X
-#allow loopback
-sudo iptables -A INPUT -i lo -j ACCEPT
-sudo iptables -A OUTPUT -o lo -j ACCEPT
-#icmp
-sudo iptables -A OUTPUT -p icmp -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-sudo iptables -A INPUT  -p icmp -m state --state ESTABLISHED,RELATED     -j ACCEPT
-#dns
-sudo iptables -A OUTPUT -p udp  --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A INPUT  -p udp  --sport 53 -m state --state ESTABLISHED     -j ACCEPT
-sudo iptables -A OUTPUT -p tcp  --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A INPUT  -p tcp  --sport 53 -m state --state ESTABLISHED     -j ACCEPT
-#https
-sudo iptables -A OUTPUT -p tcp  --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A INPUT  -p tcp  --sport 443 -m state --state ESTABLISHED     -j ACCEPT
-#dashboard
-sudo iptables -A OUTPUT -p tcp  --dport 8080 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A INPUT  -p tcp  --sport 8080 -m state --state ESTABLISHED     -j ACCEPT
-#http
-sudo iptables -A OUTPUT -p tcp  --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A INPUT  -p tcp  --sport 80 -m state --state ESTABLISHED     -j ACCEPT
-#ssh
-sudo iptables -A OUTPUT -p tcp  --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
-sudo iptables -A INPUT  -p tcp  --sport 22 -m state --state ESTABLISHED     -j ACCEPT
-# policy
-sudo iptables -P INPUT DROP
-sudo iptables -P OUTPUT DROP
+
 
 echo "compiling source..."
-sudo mkdir $SETUP_PATH
-sudo mkdir $SETUP_PATH/sbin/
-sudo mkdir $SETUP_PATH/cert/
-sudo mkdir $SETUP_PATH/html/
+sudo mkdir -pv $SETUP_PATH
+sudo mkdir -pv $SETUP_PATH/sbin/
+sudo mkdir -pv $SETUP_PATH/cert/
+sudo mkdir  -pv $SETUP_PATH/html/
 
 echo "apply nginx patch..."
 patch -p0 <$IRON_FOX_ROOT/nginx.patch
